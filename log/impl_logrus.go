@@ -17,7 +17,8 @@ func (l *logrusImpl) GetLevel() Level {
 	return Level(logrus.GetLevel())
 }
 
-func NewLoggrus() ILogger {
+// NewLogrus creates a new instance of the logrus implementation of ILoger
+func NewLogrus() ILogger {
 	return &logrusImpl{
 		Logger: *logrus.StandardLogger(),
 	}

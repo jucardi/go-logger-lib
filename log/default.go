@@ -4,10 +4,10 @@ var defaultLogger ILogger
 
 func init() {
 	RegisterBuilder(LoggerLogrus, func(...interface{}) ILogger {
-		return NewLoggrus()
+		return NewLogrus()
 	})
 	RegisterBuilder(LoggerNil, func(...interface{}) ILogger {
-		return NewNilLogger()
+		return NewNil()
 	})
 
 	defaultLogger = Get(LoggerLogrus)
@@ -16,7 +16,7 @@ func init() {
 // SetDefault sets a logger instance as the default logger.
 func SetDefault(logger ILogger) {
 	if logger == nil {
-		defaultLogger = NewNilLogger()
+		defaultLogger = NewNil()
 		return
 	}
 

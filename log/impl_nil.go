@@ -31,6 +31,7 @@ func (n *nilLogger) Panic(args ...interface{})                 {}
 func (n *nilLogger) Panicf(format string, args ...interface{}) {}
 func (n *nilLogger) Panicln(args ...interface{})               {}
 
-func NewNilLogger() ILogger {
+// NewNil creates a new instance of the Nil logger
+func NewNil() ILogger {
 	return &nilLogger{}
 }
