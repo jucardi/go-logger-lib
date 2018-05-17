@@ -28,8 +28,8 @@ func RegisterBuilder(name string, ctor func(...interface{}) ILogger) {
 	loggersRepo[name] = ctor
 }
 
-// Get returns an instance of the requested logger by its name. Returns nil if a logger
-// by that name has not been previously registered.
+// Get returns an instance of the requested logger by its name. Returns the Nil Logger implementation
+// if a logger by the given name is not found.
 //
 //   {name} - The implementation name of the instance to be retrieved.
 //   {args} - Variadic interface{} array as optional arguments for a registered logger constructor.
@@ -39,7 +39,7 @@ func Get(name string, args ...interface{}) ILogger {
 		return ctor(args...)
 	}
 
-	return nil
+	return NewNil()
 }
 
 // List returns the list of loggers that have been registered to the factory.
