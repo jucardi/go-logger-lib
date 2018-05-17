@@ -73,16 +73,16 @@ type ILogger interface {
 ## The factory
 Simply provides the following functions
 
-* `RegisterLogger(name string, logger ILogger)`: Registers an instance of ILogger to be returned as the singleton instance by the given name.
+* `Register(name string, logger ILogger)`: Registers an instance of ILogger to be returned as the singleton instance by the given name.
   * `name`: The logger implementation name.
   * `logger`: The logger instance.
-* `RegisterLoggerBuilder(name string, ctor func(...interface{}) ILogger)`: Registers an ILogger constructor function which will be used to create a new instance of the logger when requested instance by the given name. The constructor allows a variadic interface{} array that can be used for optional constructor variables, such as the instance name of a logger, the package name where it is used, etc. It is up to the custom implementation of a logger to use these values.
+* `RegisterBuilder(name string, ctor func(...interface{}) ILogger)`: Registers an ILogger constructor function which will be used to create a new instance of the logger when requested instance by the given name. The constructor allows a variadic interface{} array that can be used for optional constructor variables, such as the instance name of a logger, the package name where it is used, etc. It is up to the custom implementation of a logger to use these values.
   * `name`: The logger implementation name.
   * `ctor`: The constructor function used to create the ILogger instance.
 * `Get(name string, args ...interface{}) ILogger`: Returns an instance of the requested logger by its name. Returns nil if a logger by that name has not been previously registered.
   * `name`: The implementation name of the instance to be retrieved.
   * `args`: Variadic interface{} array as optional arguments for a registered logger constructor.
-* `LoggersList() []string`: Returns the list of loggers that have been registered to the factory.
+* `List() []string`: Returns the list of loggers that have been registered to the factory.
 * `Contains(name string) bool`: Contains indicates if a logger by the given name is contained by the factory.
 
 ## Predefined loggers

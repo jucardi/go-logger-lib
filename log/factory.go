@@ -2,19 +2,19 @@ package log
 
 var loggersRepo = map[string]func(...interface{}) ILogger{}
 
-// RegisterLogger registers an instance of ILogger to be returned as the singleton
+// Register registers an instance of ILogger to be returned as the singleton
 // instance by the given name.
 //
 //   {name}   - The logger implementation name.
 //   {logger} - The logger instance.
 //
-func RegisterLogger(name string, logger ILogger) {
+func Register(name string, logger ILogger) {
 	loggersRepo[name] = func(...interface{}) ILogger {
 		return logger
 	}
 }
 
-// RegisterLoggerBuilder registers an ILogger constructor function which will be used
+// RegisterBuilder registers an ILogger constructor function which will be used
 // to create a new instance of the logger when requested instance by the given name.
 //
 // The constructor allows a variadic interface{} array that can be used for optional constructor
@@ -24,7 +24,7 @@ func RegisterLogger(name string, logger ILogger) {
 //   {name} - The logger implementation name.
 //   {ctor} - The constructor function used to create the ILogger instance.
 //
-func RegisterLoggerBuilder(name string, ctor func(...interface{}) ILogger) {
+func RegisterBuilder(name string, ctor func(...interface{}) ILogger) {
 	loggersRepo[name] = ctor
 }
 
@@ -42,8 +42,8 @@ func Get(name string, args ...interface{}) ILogger {
 	return nil
 }
 
-// LoggersList returns the list of loggers that have been registered to the factory.
-func LoggersList() []string {
+// List returns the list of loggers that have been registered to the factory.
+func List() []string {
 	var ret []string
 	for k := range loggersRepo {
 		ret = append(ret, k)

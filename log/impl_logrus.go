@@ -17,7 +17,7 @@ func (l *logrusImpl) GetLevel() Level {
 	return Level(logrus.GetLevel())
 }
 
-func newLoggrus() ILogger {
+func NewLoggrus() ILogger {
 	return &logrusImpl{
 		Logger: *logrus.StandardLogger(),
 	}

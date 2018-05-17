@@ -3,11 +3,11 @@ package log
 var defaultLogger ILogger
 
 func init() {
-	RegisterLoggerBuilder(LoggerLogrus, func(...interface{}) ILogger {
-		return newLoggrus()
+	RegisterBuilder(LoggerLogrus, func(...interface{}) ILogger {
+		return NewLoggrus()
 	})
-	RegisterLoggerBuilder(LoggerNil, func(...interface{}) ILogger {
-		return newNilLogger()
+	RegisterBuilder(LoggerNil, func(...interface{}) ILogger {
+		return NewNilLogger()
 	})
 
 	defaultLogger = Get(LoggerLogrus)
@@ -16,7 +16,7 @@ func init() {
 // SetDefault sets a logger instance as the default logger.
 func SetDefault(logger ILogger) {
 	if logger == nil {
-		defaultLogger = newNilLogger()
+		defaultLogger = NewNilLogger()
 		return
 	}
 

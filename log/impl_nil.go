@@ -31,6 +31,6 @@ func (n *nilLogger) Panic(args ...interface{})                 {}
 func (n *nilLogger) Panicf(format string, args ...interface{}) {}
 func (n *nilLogger) Panicln(args ...interface{})               {}
 
-func newNilLogger() ILogger {
+func NewNilLogger() ILogger {
 	return &nilLogger{}
 }
