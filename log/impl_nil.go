@@ -2,7 +2,7 @@ package log
 
 // LoggerNil indicates the name of the predefined nil ILogger implementation which does nothing when
 // the log functions are invoked.
-const LoggerNil = "logrus"
+const LoggerNil = "nil"
 
 // ILogger implementation that does nothing on function calls.
 type nilLogger struct{}
