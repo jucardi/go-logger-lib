@@ -2,7 +2,7 @@ package log
 
 import (
 	"fmt"
-	"strings"
+	"github.com/jucardi/go-strings/stringx"
 )
 
 // These are the different logging levels. You can set the logging level to log
@@ -35,9 +35,9 @@ func (level Level) String() string {
 	case DebugLevel:
 		return "debug"
 	case InfoLevel:
-		return "info"
+		return "info "
 	case WarnLevel:
-		return "warning"
+		return "warn "
 	case ErrorLevel:
 		return "error"
 	case FatalLevel:
@@ -51,7 +51,7 @@ func (level Level) String() string {
 
 // ParseLevel takes a string level and returns the Logrus log level constant.
 func ParseLevel(lvl string) (Level, error) {
-	switch strings.ToLower(lvl) {
+	switch stringx.New(lvl).ToLower().TrimSpace().S() {
 	case "panic":
 		return PanicLevel, nil
 	case "fatal":
@@ -67,5 +67,5 @@ func ParseLevel(lvl string) (Level, error) {
 	}
 
 	var l Level
-	return l, fmt.Errorf("not a valid logrus Level: %q", lvl)
+	return l, fmt.Errorf("not a valid log Level: %q", lvl)
 }

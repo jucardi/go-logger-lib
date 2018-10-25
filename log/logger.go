@@ -51,4 +51,7 @@ type ILogger interface {
 	Panicf(format string, args ...interface{})
 	// Panicln logs a message at level Panic on the logger.
 	Panicln(args ...interface{})
+
+	// SetFormatter sets a custom formatter to display the logs
+	SetFormatter(formatter IFormatter)
 }

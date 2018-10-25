@@ -127,3 +127,8 @@ func Panicf(format string, args ...interface{}) {
 func Panicln(args ...interface{}) {
 	defaultLogger.Panicln(args...)
 }
+
+// SetFormatter sets a custom formatter to display the logs
+func SetFormatter(formatter IFormatter) {
+	defaultLogger.SetFormatter(formatter)
+}

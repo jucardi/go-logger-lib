@@ -30,6 +30,7 @@ func (n *nilLogger) Fatalln(args ...interface{})               {}
 func (n *nilLogger) Panic(args ...interface{})                 {}
 func (n *nilLogger) Panicf(format string, args ...interface{}) {}
 func (n *nilLogger) Panicln(args ...interface{})               {}
+func (n *nilLogger) SetFormatter(formatter IFormatter)         {}
 
 // NewNil creates a new instance of the Nil logger
 func NewNil() ILogger {
