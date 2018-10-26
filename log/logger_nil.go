@@ -4,7 +4,7 @@ package log
 // the log functions are invoked.
 const LoggerNil = "nil"
 
-// ILogger implementation that does nothing on function calls.
+// ILogger implementation that does nothing on function calls. Useful when logging is meant to be disabled.
 type nilLogger struct{}
 
 func (n *nilLogger) GetLevel() Level {

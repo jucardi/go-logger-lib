@@ -1,7 +1,14 @@
 package log
 
 import (
+	"io"
 	"time"
+)
+
+const (
+	FieldLevel     = "level"
+	FieldTimestamp = "timestamp"
+	FieldMessage   = "message"
 )
 
 // Entry represents a log entry.
@@ -19,6 +26,7 @@ type Entry struct {
 	Message string
 
 	metadata map[string]interface{}
+	writer   io.Writer
 }
 
 func (e *Entry) AddMetadata(key string, val interface{}) {
@@ -26,4 +34,22 @@ func (e *Entry) AddMetadata(key string, val interface{}) {
 		e.metadata = map[string]interface{}{}
 	}
 	e.metadata[key] = val
+}
+
+func (e *Entry) getField(name string) interface{} {
+	switch name {
+	case FieldMessage:
+		return e.Message
+	case FieldLevel:
+		return e.Level
+	case FieldTimestamp:
+		return e.Timestamp
+	}
+	if e.Data == nil {
+		return nil
+	}
+	if ret, ok := e.Data[name]; ok {
+		return ret
+	}
+	return nil
 }

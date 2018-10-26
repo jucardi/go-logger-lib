@@ -33,20 +33,20 @@ type Level uint32
 func (level Level) String() string {
 	switch level {
 	case DebugLevel:
-		return "debug"
+		return "DEBUG"
 	case InfoLevel:
-		return "info "
+		return "INFO "
 	case WarnLevel:
-		return "warn "
+		return "WARN "
 	case ErrorLevel:
-		return "error"
+		return "ERROR"
 	case FatalLevel:
-		return "fatal"
+		return "FATAL"
 	case PanicLevel:
-		return "panic"
+		return "PANIC"
 	}
 
-	return "unknown"
+	return "UNKNOWN"
 }
 
 // ParseLevel takes a string level and returns the Logrus log level constant.

@@ -2,8 +2,6 @@ package log
 
 import (
 	"io"
-	"os"
-	"strings"
 	"text/template"
 )
 
@@ -39,42 +37,4 @@ func (f *BaseFormatter) SetTemplate(tmpl string) error {
 	}
 	f.templateHandler = t
 	return nil
-}
-
-// BaseTerminalFormatter base structure to create formatters for a terminal
-type BaseTerminalFormatter struct {
-	BaseFormatter
-	// Set to true to bypass checking for a TTY before outputting colors.
-	ForceColors bool
-
-	// Force disabling colors.
-	DisableColors bool
-
-	// Override coloring based on CLICOLOR and CLICOLOR_FORCE. - https://bixense.com/clicolors/
-	EnvironmentOverrideColors bool
-	supportsColor             *bool
-	colorScheme               LevelColorScheme
-}
-
-func (f *BaseTerminalFormatter) isColored() bool {
-	if f.supportsColor == nil {
-		supportsColor := f.ForceColors
-
-		if force, ok := os.LookupEnv("CLICOLOR_FORCE"); ok && force != "0" {
-			supportsColor = true
-		} else if ok && force == "0" {
-			supportsColor = false
-		} else if os.Getenv("CLICOLOR") == "0" {
-			supportsColor = false
-		} else if strings.Contains(os.Getenv("TERM"), "color") {
-			supportsColor = true
-		}
-		f.supportsColor = &supportsColor
-	}
-
-	return *f.supportsColor && !f.DisableColors
-}
-
-func (f *BaseTerminalFormatter) SetColorScheme(scheme LevelColorScheme) {
-	f.colorScheme = scheme
 }

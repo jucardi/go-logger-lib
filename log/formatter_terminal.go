@@ -3,35 +3,61 @@ package log
 import (
 	"errors"
 	"fmt"
-	"github.com/jucardi/go-terminal-colors"
 	"io"
+	"os"
+	"strings"
 )
+
+// BaseTerminalFormatter base structure to create formatters for a terminal
+type BaseTerminalFormatter struct {
+	BaseFormatter
+	// Set to true to bypass checking for a TTY before outputting colors.
+	ForceColors bool
+
+	// Force disabling colors.
+	DisableColors bool
+
+	// Override coloring based on CLICOLOR and CLICOLOR_FORCE. - https://bixense.com/clicolors/
+	EnvironmentOverrideColors bool
+	supportsColor             *bool
+	theme                     *TerminalTheme
+}
+
+func (f *BaseTerminalFormatter) isColored() bool {
+	if f.supportsColor == nil {
+		supportsColor := f.ForceColors
+
+		if force, ok := os.LookupEnv("CLICOLOR_FORCE"); ok && force != "0" {
+			supportsColor = true
+		} else if ok && force == "0" {
+			supportsColor = false
+		} else if os.Getenv("CLICOLOR") == "0" {
+			supportsColor = false
+		} else if strings.Contains(os.Getenv("TERM"), "color") {
+			supportsColor = true
+		}
+		f.supportsColor = &supportsColor
+	}
+
+	return *f.supportsColor && !f.DisableColors
+}
+
+func (f *BaseTerminalFormatter) SetTheme(scheme *TerminalTheme) {
+	f.theme = scheme
+	if scheme.Template != "" {
+		f.SetTemplate(scheme.Template)
+	}
+}
 
 // TextFormatter formats logs into text
 type TerminalFormatter struct {
 	BaseTerminalFormatter
 }
 
-type LevelColorScheme map[Level][]fmtc.Color
-
-const (
-	TemplateTerminalFormatter = `{{ level . }} {{ color (timestamp . "HH:mm:ss") "Cyan" }} {{ .Message }}`
-)
-
-var DefaultColorScheme = LevelColorScheme{
-	DebugLevel: []fmtc.Color{fmtc.Bold, fmtc.DarkGray},
-	InfoLevel:  []fmtc.Color{fmtc.Bold, fmtc.White, fmtc.BgBlue},
-	WarnLevel:  []fmtc.Color{fmtc.Black, fmtc.BgYellow},
-	ErrorLevel: []fmtc.Color{fmtc.Bold, fmtc.White, fmtc.BgRed},
-	FatalLevel: []fmtc.Color{fmtc.Bold, fmtc.White, fmtc.BgRed},
-	PanicLevel: []fmtc.Color{fmtc.Bold, fmtc.White, fmtc.BgRed},
-}
-
-func NewTerminalFormatter() IFormatter {
+func NewTerminalFormatter() *TerminalFormatter {
 	ret := &TerminalFormatter{}
 	ret.helpers = getDefaultHelpers()
-	ret.SetTemplate(TemplateTerminalFormatter)
-	ret.SetColorScheme(DefaultColorScheme)
+	ret.SetTheme(TerminalThemeDefault)
 	return ret
 }
 
@@ -46,7 +72,7 @@ func (f *TerminalFormatter) Format(writer io.Writer, entry *Entry) error {
 	}
 
 	entry.AddMetadata(metadataColorEnabled, f.isColored())
-	entry.AddMetadata(metadataColorScheme, f.colorScheme)
+	entry.AddMetadata(metadataColorScheme, f.theme.Schemes)
 	if err := f.templateHandler.Execute(writer, entry); err != nil {
 		return fmt.Errorf("unable to write log to io writer, %s", err.Error())
 	}
