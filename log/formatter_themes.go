@@ -60,7 +60,7 @@ var (
 	}
 
 	TerminalThemeCliApp = &TerminalTheme{
-		Template: `{{ timestamp " HH:mm:ss " . }} {{ colored "message" . }}`,
+		Template: `{{ timestamp " HH:mm:ss " . }} {{ message . "           " }}`,
 		Schemes: TerminalColorScheme{
 			"timestamp": LevelColorScheme{
 				DebugLevel: []fmtc.Color{fmtc.Gray},

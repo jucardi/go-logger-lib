@@ -16,45 +16,36 @@ const (
 
 func getDefaultHelpers() template.FuncMap {
 	return template.FuncMap{
-		"string":    stringFn,
-		"upper":     uppercaseFn,
-		"lower":     lowercaseFn,
-		"fmt":       formatFn,
-		"level":     coloredLevelFn,
-		"timestamp": timestampFn,
-		"colorCode": colorCodeFn,
-		"colorName": colorNameFn,
-		"colored":   colorFieldFn,
-		"scheme":    colorSchemeFn,
+		"Sprint":     fmt.Sprint,
+		"Sprintf":    fmt.Sprintf,
+		"ToUpper":    strings.ToUpper,
+		"ToLower":    strings.ToLower,
+		"Replace":    strings.Replace,
+		"TimeFormat": iso8601.TimeToString,
+		"level":      levelFn,
+		"timestamp":  timestampFn,
+		"message":    messageFn,
+		"colorCode":  colorCodeFn,
+		"colorName":  colorNameFn,
+		"colored":    colorFieldFn,
+		"scheme":     colorSchemeFn,
 	}
 }
 
-func stringFn(arg ...interface{}) string {
-	return fmt.Sprint(arg...)
-}
-
-func uppercaseFn(arg string) string {
-	return strings.ToUpper(stringFn(arg))
-}
-
-func lowercaseFn(arg interface{}) string {
-	return strings.ToLower(stringFn(arg))
-}
-
-func formatFn(format string, args ...interface{}) string {
-	return fmt.Sprintf(format, args...)
-}
-
-func coloredLevelFn(entry Entry) string {
+func levelFn(entry Entry) string {
 	return colorFieldFn(FieldLevel, entry, " %s ")
 }
 
-func timestampFn(format string, entry Entry, disableColor ...bool) string {
+func timestampFn(format string, entry Entry) string {
 	timeStr := iso8601.TimeToString(entry.Timestamp, format)
-	if len(disableColor) > 0 && disableColor[0] {
-		return timeStr
-	}
 	return colorSchemeFn(FieldTimestamp, timeStr, entry)
+}
+
+func messageFn(entry Entry, newLinePadding ...string) string {
+	if len(newLinePadding) > 0 && newLinePadding[0] != "" {
+		return colorSchemeFn(FieldMessage, strings.Replace(entry.Message, "\n", "\n"+newLinePadding[0], -1), entry)
+	}
+	return colorFieldFn(FieldMessage, entry)
 }
 
 func colorFieldFn(field string, entry Entry, format ...string) string {
