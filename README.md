@@ -6,8 +6,16 @@ This library is does not actually provide a logger implementation but instead by
 
 ## Getting started
 
+To keep up to date with the most recent version:
+
 ```bash
 go get github.com/jucardi/go-logger-lib
+```
+
+To get a specific version:
+
+```bash
+go get gopkg.in/jucardi/go-logger-lib.v1
 ```
 
 ## What inspired me to create this simple library?

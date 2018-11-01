@@ -1,6 +1,6 @@
 package log
 
-import "github.com/jucardi/go-terminal-colors"
+import "gopkg.in/jucardi/go-terminal-colors.v1"
 
 // LevelColorScheme represents the terminal colors associated to the level parsing for each logging level.
 type LevelColorScheme map[Level][]fmtc.Color

@@ -2,7 +2,8 @@ package log
 
 import (
 	"fmt"
-	"github.com/jucardi/go-strings/stringx"
+
+	"gopkg.in/jucardi/go-strings.v1/stringx"
 )
 
 // These are the different logging levels. You can set the logging level to log

@@ -2,11 +2,12 @@ package log
 
 import (
 	"fmt"
-	"github.com/jucardi/go-iso8601"
-	"github.com/jucardi/go-streams/streams"
-	"github.com/jucardi/go-terminal-colors"
 	"strings"
 	"text/template"
+
+	"gopkg.in/jucardi/go-iso8601.v1"
+	"gopkg.in/jucardi/go-streams.v1/streams"
+	"gopkg.in/jucardi/go-terminal-colors.v1"
 )
 
 const (
