@@ -11,6 +11,7 @@ func (n *nilLogger) GetLevel() Level {
 	return DebugLevel
 }
 
+func (n *nilLogger) Name() string                              { return "" }
 func (n *nilLogger) SetLevel(level Level)                      {}
 func (n *nilLogger) Debug(args ...interface{})                 {}
 func (n *nilLogger) Debugf(format string, args ...interface{}) {}

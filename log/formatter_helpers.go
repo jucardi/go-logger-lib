@@ -23,18 +23,27 @@ func getDefaultHelpers() template.FuncMap {
 		"ToLower":    strings.ToLower,
 		"Replace":    strings.Replace,
 		"TimeFormat": iso8601.TimeToString,
-		"level":      levelFn,
-		"timestamp":  timestampFn,
-		"message":    messageFn,
-		"colorCode":  colorCodeFn,
-		"colorName":  colorNameFn,
-		"colored":    colorFieldFn,
-		"scheme":     colorSchemeFn,
+		"Level":      levelFn,
+		"LoggerName": loggerNameFn,
+		"Timestamp":  timestampFn,
+		"Message":    messageFn,
+		"ColorCode":  colorCodeFn,
+		"ColorName":  colorNameFn,
+		"Colored":    colorFieldFn,
+		"Scheme":     colorSchemeFn,
+		"MatchSize":  matchSizeFn,
 	}
 }
 
 func levelFn(entry Entry) string {
 	return colorFieldFn(FieldLevel, entry, " %s ")
+}
+
+func loggerNameFn(entry Entry) string {
+	if entry.LoggerName == "" {
+		return ""
+	}
+	return colorFieldFn(FieldLoggerName, entry, " %s ")
 }
 
 func timestampFn(format string, entry Entry) string {
@@ -85,4 +94,16 @@ func colorNameFn(arg interface{}, colors ...string) string {
 		ret, _ := fmtc.Parse(i.(string))
 		return ret
 	}).ToArray().([]fmtc.Color)...).Sprint(arg)
+}
+
+func matchSizeFn(str string, size int) string {
+	if len(str) > size {
+		return str[:size]
+	}
+	spaces := size - len(str)
+	ret := str
+	for i := 0; i < spaces; i++ {
+		ret = ret + " "
+	}
+	return ret
 }

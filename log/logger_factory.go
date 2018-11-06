@@ -1,6 +1,12 @@
 package log
 
-var loggersRepo = map[string]func(...interface{}) ILogger{}
+import (
+	"io"
+)
+
+var (
+	loggers = map[string]ILogger{}
+)
 
 // Register registers an instance of ILogger to be returned as the singleton
 // instance by the given name.
@@ -9,51 +15,49 @@ var loggersRepo = map[string]func(...interface{}) ILogger{}
 //   {logger} - The logger instance.
 //
 func Register(name string, logger ILogger) {
-	loggersRepo[name] = func(...interface{}) ILogger {
-		return logger
-	}
-}
-
-// RegisterBuilder registers an ILogger constructor function which will be used
-// to create a new instance of the logger when requested instance by the given name.
-//
-// The constructor allows a variadic interface{} array that can be used for optional constructor
-// variables, such as the instance name of a logger, the package name where it is used, etc.
-// It is up to the custom implementation of a logger to use these values.
-//
-//   {name} - The logger implementation name.
-//   {ctor} - The constructor function used to create the ILogger instance.
-//
-func RegisterBuilder(name string, ctor func(...interface{}) ILogger) {
-	loggersRepo[name] = ctor
+	loggers[name] = logger
 }
 
 // Get returns an instance of the requested logger by its name. Returns the Nil Logger implementation
 // if a logger by the given name is not found.
 //
 //   {name} - The implementation name of the instance to be retrieved.
-//   {args} - Variadic interface{} array as optional arguments for a registered logger constructor.
 //
-func Get(name string, args ...interface{}) ILogger {
-	if ctor, ok := loggersRepo[name]; ok {
-		return ctor(args...)
+func Get(name string) ILogger {
+	if v, ok := loggers[name]; ok {
+		return v
 	}
 
 	return NewNil()
 }
 
-// List returns the list of loggers that have been registered to the factory.
+// New creates a new logger instance using the default builder assigned.
+//
+//   {name}   - The implementation name of the instance to be retrieved.
+//   {writer} - (Optional) The io.Writer the logger instance should use. If not provided,
+//              it is set to the default writer by the implementation, typically Stdout or Stderr
+//
+func New(name string, writer ...io.Writer) ILogger {
+	return defaultBuilder(name, writer...)
+}
+
+// List returns the list of loggers that have been registered.
 func List() []string {
 	var ret []string
-	for k := range loggersRepo {
+	for k := range loggers {
 		ret = append(ret, k)
 	}
 	return ret
 }
 
-// Contains indicates if a logger by the given name is contained by the factory
+// SetDefaultBuilder assigns the default builder to be used when creating new loggers.
+func SetDefaultBuilder(ctor LoggerBuilder) {
+	defaultBuilder = ctor
+}
+
+// Contains indicates if a logger by the given name exists.
 func Contains(name string) bool {
-	for k := range loggersRepo {
+	for k := range loggers {
 		if name == k {
 			return true
 		}

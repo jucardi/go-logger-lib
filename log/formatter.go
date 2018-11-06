@@ -1,12 +1,14 @@
 package log
 
 import (
+	"fmt"
 	"io"
+	"os"
 	"text/template"
 )
 
 const (
-	TemplateDefault = `{{ .Level }} {{ .Timestamp }} | {{ .Message }}`
+	TemplateDefault = `{{ if .LoggerName }}{{ MatchSize .LoggerName 10 }} | {{ end }}{{ .Level }} | {{ TimeFormat .Timestamp "HH:mm:ss" }} | {{ .Message }}`
 )
 
 // The Formatter interface is used to implement a custom Formatter. It takes an
@@ -33,6 +35,9 @@ type BaseFormatter struct {
 func (f *BaseFormatter) SetTemplate(tmpl string) error {
 	t, err := template.New("formatter").Funcs(f.helpers).Parse(tmpl)
 	if err != nil {
+		f.SetTemplate(TemplateDefault)
+		fmt.Fprintf(os.Stderr, "error occurred while setting template for logger, %s  > ", err.Error())
+		fmt.Fprintln(os.Stderr, "setting default template")
 		return err
 	}
 	f.templateHandler = t

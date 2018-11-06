@@ -16,8 +16,16 @@ type TerminalTheme struct {
 
 var (
 	TerminalThemeDefault = &TerminalTheme{
-		Template: `{{ level . }}{{ timestamp " HH:mm:ss " . }} {{ .Message }}`,
+		Template: `{{ LoggerName . }}{{ Level . }}{{ Timestamp " HH:mm:ss " . }} {{ .Message }}`,
 		Schemes: TerminalColorScheme{
+			"loggerName": LevelColorScheme{
+				DebugLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				InfoLevel:  []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				WarnLevel:  []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				ErrorLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				FatalLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				PanicLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+			},
 			"level": LevelColorScheme{
 				DebugLevel: []fmtc.Color{fmtc.Bold, fmtc.DarkGray},
 				InfoLevel:  []fmtc.Color{fmtc.Bold, fmtc.Cyan},
@@ -38,8 +46,16 @@ var (
 	}
 
 	TerminalThemeAlternative = &TerminalTheme{
-		Template: `{{ scheme "level" (string " " .Level " ") . }}{{ timestamp " HH:mm:ss " . }} {{ .Message }}`,
+		Template: `{{ LoggerName . }}{{ Scheme "level" (string " " .Level " ") . }}{{ Timestamp " HH:mm:ss " . }} {{ .Message }}`,
 		Schemes: TerminalColorScheme{
+			"loggerName": LevelColorScheme{
+				DebugLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				InfoLevel:  []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				WarnLevel:  []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				ErrorLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				FatalLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+				PanicLevel: []fmtc.Color{fmtc.Bold, fmtc.Yellow},
+			},
 			"level": LevelColorScheme{
 				DebugLevel: []fmtc.Color{fmtc.Bold, fmtc.DarkGray},
 				InfoLevel:  []fmtc.Color{fmtc.Bold, fmtc.White, fmtc.BgBlue},
@@ -60,7 +76,7 @@ var (
 	}
 
 	TerminalThemeCliApp = &TerminalTheme{
-		Template: `{{ timestamp " HH:mm:ss " . }} {{ message . "           " }}`,
+		Template: `{{ Timestamp " HH:mm:ss " . }} {{ Message . "           " }}`,
 		Schemes: TerminalColorScheme{
 			"timestamp": LevelColorScheme{
 				DebugLevel: []fmtc.Color{fmtc.Gray},

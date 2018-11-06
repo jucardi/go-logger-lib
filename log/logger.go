@@ -1,10 +1,19 @@
 package log
 
+import "io"
+
+// LoggerBuilder defines a logger constructor. The factory contains multiple logger constructors where new loggers with specified names
+// can be created. Also these loggers can have their own io.Writer.
+type LoggerBuilder func(name string, writer ...io.Writer) ILogger
+
 // ILogger defines the contract for a logger interface to be used by the mgo and mongo packages.
 // This interface matches most commonly used loggers which should make it simple to assign any
 // logger implementation being used. By default it uses the sirupsen/logrus standard logger
 // implementation.
 type ILogger interface {
+	// Name returns the manager name
+	Name() string
+
 	// SetLevel sets the logging level
 	SetLevel(level Level)
 	// GetLevel gets the logging level

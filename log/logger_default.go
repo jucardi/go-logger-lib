@@ -1,16 +1,16 @@
 package log
 
-var defaultLogger ILogger
+var (
+	defaultLogger  ILogger
+	defaultBuilder LoggerBuilder
+)
 
 func init() {
-	RegisterBuilder(LoggerLogrus, func(...interface{}) ILogger {
-		return NewLogrus()
-	})
-	RegisterBuilder(LoggerNil, func(...interface{}) ILogger {
-		return NewNil()
-	})
+	Register(LoggerLogrus, NewLogrus(""))
+	Register(LoggerNil, NewNil())
 
 	defaultLogger = Get(LoggerLogrus)
+	defaultBuilder = NewLogrus
 }
 
 // SetDefault sets a logger instance as the default logger.
@@ -24,7 +24,7 @@ func SetDefault(logger ILogger) {
 }
 
 // GetDefault returns the the instance currently set as the default logger
-func GetDefault() ILogger {
+func Default() ILogger {
 	return defaultLogger
 }
 
