@@ -16,6 +16,7 @@ var (
 //
 func Register(name string, logger ILogger) ILogger {
 	loggers[name] = logger
+	return logger
 }
 
 // Get returns an instance of the requested logger by its name. Returns the Nil Logger implementation
