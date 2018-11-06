@@ -81,19 +81,19 @@ type ILogger interface {
 ## The factory
 Simply provides the following functions
 
+* `New(name string, writer ...io.Writer) ILogger`: Creates a new logger instance using the default builder assigned.
+  * `name`: The name of the logger to create.
+  * `writer`: (Optional) The io.Writer the logger instance should use. If not provided, it is set to the default writer by the implementation, typically Stdout or Stderr
 * `Register(name string, logger ILogger)`: Registers an instance of ILogger to be returned as the singleton instance by the given name.
-  * `name`: The logger implementation name.
+  * `name`: The logger name.
   * `logger`: The logger instance.
-* `RegisterBuilder(name string, ctor func(...interface{}) ILogger)`: Registers an ILogger constructor function which will be used to create a new instance of the logger when requested instance by the given name. The constructor allows a variadic interface{} array that can be used for optional constructor variables, such as the instance name of a logger, the package name where it is used, etc. It is up to the custom implementation of a logger to use these values.
-  * `name`: The logger implementation name.
-  * `ctor`: The constructor function used to create the ILogger instance.
-* `Get(name string, args ...interface{}) ILogger`: Returns an instance of the requested logger by its name. Returns nil if a logger by that name has not been previously registered.
-  * `name`: The implementation name of the instance to be retrieved.
-  * `args`: Variadic interface{} array as optional arguments for a registered logger constructor.
-* `List() []string`: Returns the list of loggers that have been registered to the factory.
-* `Contains(name string) bool`: Contains indicates if a logger by the given name is contained by the factory.
+* `Get(name string) ILogger`: Returns an instance of the requested logger by its name. Creates a new logger with the default logger builder if the logger does not exist.
+  * `name`: The name of the logger instance to be retrieved.
+* `List() []string`: Returns the list of loggers that have been registered.
+* `Contains(name string) bool`: Indicates if a logger by the given name exists.
+* `SetDefaultBuilder(ctor LoggerBuilder)` Assigns a new constructor function to use as the default logger constructor.
 
-## Predefined loggers
+## Predefined logger types
 
 * **Logrus**: Predefined logger implementation powered by `github.com/sirupsen/logrus`. It is assigned as default to be de default logger which responds to the static functions in the `log` package. Can also be obtained by the using the `"logrus"` name (also defined in the `LoggerLogrus` constant). Eg: `log.Get(log.LoggerLogrus)`
 * **Nil Logger**: This implementation, as the name suggests, is a logger that does nothing when its functions are called. Can be obtained by the using the `"nil"` name (also defined in the `LoggerNil` constant). Eg: `log.Get(log.LoggerNil)`. To easily set the Nil Logger as the default logger, simply pass `nil` value to the `log.SetDefault` function. Eg `log.SetDefault(nil)`
