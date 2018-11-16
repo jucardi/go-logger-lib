@@ -35,12 +35,12 @@ var (
 				PanicLevel: []fmtc.Color{fmtc.Bold, fmtc.Red},
 			},
 			"timestamp": LevelColorScheme{
-				DebugLevel: []fmtc.Color{fmtc.BgBlack, fmtc.DarkGray},
-				InfoLevel:  []fmtc.Color{fmtc.BgBlack, fmtc.Cyan},
-				WarnLevel:  []fmtc.Color{fmtc.BgBlack, fmtc.Yellow},
-				ErrorLevel: []fmtc.Color{fmtc.BgBlack, fmtc.Red},
-				FatalLevel: []fmtc.Color{fmtc.BgBlack, fmtc.Red},
-				PanicLevel: []fmtc.Color{fmtc.BgBlack, fmtc.Red},
+				DebugLevel: []fmtc.Color{fmtc.DarkGray},
+				InfoLevel:  []fmtc.Color{fmtc.Cyan},
+				WarnLevel:  []fmtc.Color{fmtc.Yellow},
+				ErrorLevel: []fmtc.Color{fmtc.Red},
+				FatalLevel: []fmtc.Color{fmtc.Red},
+				PanicLevel: []fmtc.Color{fmtc.Red},
 			},
 		},
 	}
