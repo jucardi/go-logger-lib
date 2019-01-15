@@ -1,5 +1,10 @@
 package log
 
+import (
+	"encoding/json"
+	"strings"
+)
+
 var (
 	defaultLogger  ILogger
 	defaultBuilder LoggerBuilder
@@ -101,4 +106,41 @@ func Panicf(format string, args ...interface{}) {
 // SetFormatter sets a custom formatter to display the logs
 func SetFormatter(formatter IFormatter) {
 	defaultLogger.SetFormatter(formatter)
+}
+
+// WarnErr logs a warning using the provided message and error if the error is not nil. Does nothing if the error is nil
+func WarnErr(err error, message ...string) {
+	if err != nil {
+		Warn(strings.Join(append(message, err.Error()), " > "))
+	}
+}
+
+// ErrorErr logs an error using the provided message and error if the error is not nil. Does nothing if the error is nil
+func ErrorErr(err error, message ...string) {
+	if err != nil {
+		Error(strings.Join(append(message, err.Error()), " > "))
+	}
+}
+
+// FatalErr logs a fatal error using the provided message and error if the error is not nil. Does nothing if the error is nil
+func FatalErr(err error, message ...string) {
+	if err != nil {
+		Fatal(strings.Join(append(message, err.Error()), " > "))
+	}
+}
+
+// PanicErr logs a panic error using the provided message and error if the error is not nil. Does nothing if the error is nil
+func PanicErr(err error, message ...string) {
+	if err != nil {
+		Panic(strings.Join(append(message, err.Error()), " > "))
+	}
+}
+
+// DebugObj logs a debug message of a json representation of the provided object. Does nothing if the object is nil.
+func DebugObj(obj interface{}) {
+	if obj == nil {
+		return
+	}
+	data, err := json.Marshal(obj)
+	Debug(string(data), err)
 }
