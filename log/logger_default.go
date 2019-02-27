@@ -118,28 +118,28 @@ func WarnErr(err error, message ...string) {
 
 // ErrorErr logs an error using the provided message and error if the error is not nil. Does nothing if the error is nil
 func ErrorErr(err error, message ...string) {
-	if err != nil && !reflect.ValueOf(err).IsNil() {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
 		Error(strings.Join(append(message, err.Error()), " > "))
 	}
 }
 
 // FatalErr logs a fatal error using the provided message and error if the error is not nil. Does nothing if the error is nil
 func FatalErr(err error, message ...string) {
-	if err != nil && !reflect.ValueOf(err).IsNil() {
+	if err != nil && reflect.ValueOf(err).IsValid() {
 		Fatal(strings.Join(append(message, err.Error()), " > "))
 	}
 }
 
 // PanicErr logs a panic error using the provided message and error if the error is not nil. Does nothing if the error is nil
 func PanicErr(err error, message ...string) {
-	if err != nil && !reflect.ValueOf(err).IsNil() {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
 		Panic(strings.Join(append(message, err.Error()), " > "))
 	}
 }
 
 // DebugObj logs a debug message of a json representation of the provided object. Does nothing if the object is nil.
 func DebugObj(obj interface{}) {
-	if obj == nil || !reflect.ValueOf(obj).IsNil() {
+	if obj == nil || !reflect.ValueOf(obj).IsValid() {
 		return
 	}
 	data, err := json.Marshal(obj)
