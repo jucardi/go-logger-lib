@@ -2,8 +2,8 @@ package log
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
-	"strings"
 )
 
 var (
@@ -110,30 +110,58 @@ func SetFormatter(formatter IFormatter) {
 }
 
 // WarnErr logs a warning using the provided message and error if the error is not nil. Does nothing if the error is nil
-func WarnErr(err error, message ...string) {
-	if err != nil && !reflect.ValueOf(err).IsNil() {
-		Warn(strings.Join(append(message, err.Error()), " > "))
+func WarnErr(err error, message ...interface{}) {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
+		Warn(append(message, " > ", err.Error())...)
+	}
+}
+
+// WarnErrf logs a warning with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
+func WarnErrf(err error, format string, message ...interface{}) {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
+		Warnf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
 	}
 }
 
 // ErrorErr logs an error using the provided message and error if the error is not nil. Does nothing if the error is nil
-func ErrorErr(err error, message ...string) {
+func ErrorErr(err error, message ...interface{}) {
 	if err != nil && !reflect.ValueOf(err).IsValid() {
-		Error(strings.Join(append(message, err.Error()), " > "))
+		Error(append(message, " > ", err.Error())...)
+	}
+}
+
+// ErrorErrf logs an error with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
+func ErrorErrf(err error, format string, message ...interface{}) {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
+		Errorf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
 	}
 }
 
 // FatalErr logs a fatal error using the provided message and error if the error is not nil. Does nothing if the error is nil
-func FatalErr(err error, message ...string) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Fatal(strings.Join(append(message, err.Error()), " > "))
+func FatalErr(err error, message ...interface{}) {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
+		Fatal(append(message, " > ", err.Error())...)
+	}
+}
+
+// FatalErrf logs an fatal error with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
+func FatalErrf(err error, format string, message ...interface{}) {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
+		Fatalf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
 	}
 }
 
 // PanicErr logs a panic error using the provided message and error if the error is not nil. Does nothing if the error is nil
-func PanicErr(err error, message ...string) {
+func PanicErr(err error, message ...interface{}) {
 	if err != nil && !reflect.ValueOf(err).IsValid() {
-		Panic(strings.Join(append(message, err.Error()), " > "))
+		Panic(append(message, " > ", err.Error())...)
+	}
+}
+
+// PanicErrf logs an panic error with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
+func PanicErrf(err error, format string, message ...interface{}) {
+	if err != nil && !reflect.ValueOf(err).IsValid() {
+		Panicf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
 	}
 }
 
