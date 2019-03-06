@@ -20,11 +20,11 @@ func (l *logrusImpl) Name() string {
 }
 
 func (l *logrusImpl) SetLevel(level Level) {
-	l.Logger.Level = logrus.Level(level)
+	l.Level = logrus.Level(level)
 }
 
 func (l *logrusImpl) GetLevel() Level {
-	return Level(logrus.GetLevel())
+	return Level(l.Level)
 }
 
 func (l *logrusImpl) SetFormatter(formatter IFormatter) {
