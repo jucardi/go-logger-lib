@@ -21,7 +21,7 @@ type loggerMemory struct {
 // NewMemory returns a logger implementation that keeps the logs in memory until flushed. In this case,
 // when providing an io.Writer, that would be the writer where all the stored logs would be flushed into.
 // Uses os.Stdout if no writer is provided
-func NewMemory(name string, writer ...io.Writer) ILoggerAsync {
+func NewMemory(name string, writer ...io.Writer) ILogger {
 	b := &bytes.Buffer{}
 	l := NewLogrus(name, b).(ILogger)
 
