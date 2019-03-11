@@ -8,35 +8,40 @@ import (
 
 type ILoggerAsync interface {
 	ILogger
-	Flush(writer io.Writer, clear ...bool)
-	FlushToStdout(clear ...bool)
+	Flush(clear ...bool)
 	Reset()
 }
 
 type loggerMemory struct {
 	ILogger
 	buffer *bytes.Buffer
+	writer io.Writer
 }
 
-func NewMemory(name string) ILoggerAsync {
+// NewMemory returns a logger implementation that keeps the logs in memory until flushed. In this case,
+// when providing an io.Writer, that would be the writer where all the stored logs would be flushed into.
+// Uses os.Stdout if no writer is provided
+func NewMemory(name string, writer ...io.Writer) ILoggerAsync {
 	b := &bytes.Buffer{}
 	l := NewLogrus(name, b).(ILogger)
+
+	var w io.Writer = os.Stdout
+	if len(writer) > 0 {
+		w = writer[0]
+	}
 
 	return &loggerMemory{
 		ILogger: l,
 		buffer:  b,
+		writer:  w,
 	}
 }
 
-func (l *loggerMemory) Flush(writer io.Writer, clear ...bool) {
-	_, _ = writer.Write(l.buffer.Bytes())
+func (l *loggerMemory) Flush(clear ...bool) {
+	_, _ = l.writer.Write(l.buffer.Bytes())
 	if len(clear) > 1 && clear[0] {
 		l.Reset()
 	}
-}
-
-func (l *loggerMemory) FlushToStdout(clear ...bool) {
-	l.Flush(os.Stdout, clear...)
 }
 
 func (l *loggerMemory) Reset() {
