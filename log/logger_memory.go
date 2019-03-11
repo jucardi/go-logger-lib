@@ -39,7 +39,7 @@ func NewMemory(name string, writer ...io.Writer) ILogger {
 
 func (l *loggerMemory) Flush(clear ...bool) {
 	_, _ = l.writer.Write(l.buffer.Bytes())
-	if len(clear) > 1 && clear[0] {
+	if len(clear) > 0 && clear[0] {
 		l.Reset()
 	}
 }
