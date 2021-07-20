@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 var (
@@ -104,72 +105,92 @@ func Panicf(format string, args ...interface{}) {
 	defaultLogger.Panicf(format, args...)
 }
 
-// SetFormatter sets a custom formatter to display the logs
-func SetFormatter(formatter IFormatter) {
-	defaultLogger.SetFormatter(formatter)
-}
-
 // WarnErr logs a warning using the provided message and error if the error is not nil. Does nothing if the error is nil
-func WarnErr(err error, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Warn(append(message, " > ", err.Error())...)
-	}
+func WarnErr(err error, args ...interface{}) {
+	LogObj(WarnLevel, err, args...)
 }
 
 // WarnErrf logs a warning with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
-func WarnErrf(err error, format string, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Warnf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
-	}
+func WarnErrf(err error, format string, args ...interface{}) {
+	LogObjf(WarnLevel, err, format, args...)
 }
 
 // ErrorErr logs an error using the provided message and error if the error is not nil. Does nothing if the error is nil
-func ErrorErr(err error, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Error(append(message, " > ", err.Error())...)
-	}
+func ErrorErr(err error, args ...interface{}) {
+	LogObj(ErrorLevel, err, args...)
 }
 
 // ErrorErrf logs an error with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
-func ErrorErrf(err error, format string, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Errorf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
-	}
+func ErrorErrf(err error, format string, args ...interface{}) {
+	LogObjf(ErrorLevel, err, format, args...)
 }
 
 // FatalErr logs a fatal error using the provided message and error if the error is not nil. Does nothing if the error is nil
-func FatalErr(err error, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Fatal(append(message, " > ", err.Error())...)
-	}
+func FatalErr(err error, args ...interface{}) {
+	LogObj(FatalLevel, err, args...)
 }
 
 // FatalErrf logs an fatal error with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
-func FatalErrf(err error, format string, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Fatalf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
-	}
+func FatalErrf(err error, format string, args ...interface{}) {
+	LogObjf(FatalLevel, err, format, args...)
 }
 
 // PanicErr logs a panic error using the provided message and error if the error is not nil. Does nothing if the error is nil
-func PanicErr(err error, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Panic(append(message, " > ", err.Error())...)
-	}
+func PanicErr(err error, args ...interface{}) {
+	LogObj(PanicLevel, err, args...)
 }
 
 // PanicErrf logs an panic error with a string format using the provided message and error if the error is not nil. Does nothing if the error is nil
-func PanicErrf(err error, format string, message ...interface{}) {
-	if err != nil && reflect.ValueOf(err).IsValid() {
-		Panicf(fmt.Sprintf(format, " > %s"), append(message, err.Error())...)
-	}
+func PanicErrf(err error, format string, args ...interface{}) {
+	LogObjf(PanicLevel, err, format, args...)
 }
 
 // DebugObj logs a debug message of a json representation of the provided object. Does nothing if the object is nil.
-func DebugObj(obj interface{}) {
-	if obj == nil || !reflect.ValueOf(obj).IsValid() {
-		return
+func DebugObj(obj interface{}, args ...interface{}) {
+	LogObj(DebugLevel, obj, args...)
+}
+
+func LogObjf(level Level, obj interface{}, format string, args ...interface{}) {
+	LogObj(level, obj, fmt.Sprintf(format, args...))
+}
+
+// LogObj logs a debug message of a json representation of the provided object. Does nothing if the object is nil.
+func LogObj(level Level, obj interface{}, args ...interface{}) {
+	if !isNil(obj) && GetLevel() >= level {
+		data, err := json.Marshal(obj)
+		m := fmt.Sprint(args...)
+		if err == nil && string(data) != "{}" {
+			Log(level, m, "\n", string(data))
+		} else {
+			Log(level, strings.Join([]string{m, fmt.Sprint(obj)}, " > "))
+		}
 	}
-	data, err := json.Marshal(obj)
-	Debug(string(data), err)
+}
+
+func Log(level Level, args ...interface{}) {
+	var fn func(args ...interface{})
+	switch level {
+	case DebugLevel:
+		fn = Debug
+	case InfoLevel:
+		fn = Info
+	case WarnLevel:
+		fn = Warn
+	case ErrorLevel:
+		fn = Error
+	case FatalLevel:
+		fn = Fatal
+	case PanicLevel:
+		fn = Panic
+	}
+	fn(args...)
+}
+
+func isNil(obj interface{}) bool {
+	return obj == nil || !reflect.ValueOf(obj).IsValid() || (reflect.ValueOf(obj).Kind() == reflect.Ptr && reflect.ValueOf(obj).IsNil())
+}
+
+// SetFormatter sets a custom formatter to display the logs
+func SetFormatter(formatter IFormatter) {
+	defaultLogger.SetFormatter(formatter)
 }

@@ -1,6 +1,6 @@
 package log
 
-import "gopkg.in/jucardi/go-terminal-colors.v1"
+import "github.com/jucardi/go-terminal-colors"
 
 // LevelColorScheme represents the terminal colors associated to the level parsing for each logging level.
 type LevelColorScheme map[Level][]fmtc.Color
@@ -86,6 +86,20 @@ var (
 				FatalLevel: []fmtc.Color{fmtc.Red},
 				PanicLevel: []fmtc.Color{fmtc.Red},
 			},
+			"message": LevelColorScheme{
+				DebugLevel: []fmtc.Color{fmtc.Gray},
+				InfoLevel:  []fmtc.Color{fmtc.White},
+				WarnLevel:  []fmtc.Color{fmtc.Yellow},
+				ErrorLevel: []fmtc.Color{fmtc.LightRed},
+				FatalLevel: []fmtc.Color{fmtc.LightRed},
+				PanicLevel: []fmtc.Color{fmtc.LightRed},
+			},
+		},
+	}
+
+	TerminalThemeCliAppNoTime = &TerminalTheme{
+		Template: `{{ Message . "           " }}`,
+		Schemes: TerminalColorScheme{
 			"message": LevelColorScheme{
 				DebugLevel: []fmtc.Color{fmtc.Gray},
 				InfoLevel:  []fmtc.Color{fmtc.White},
